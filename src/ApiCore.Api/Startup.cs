@@ -34,7 +34,7 @@ namespace ApiCore.Api
                                                           "http://www.contoso.com");
                                   });
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddDbContext<ApiCoreDbContext>(opt =>
             opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );

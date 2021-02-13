@@ -22,6 +22,9 @@ namespace ApiCore.Data.Mappings
                 .IsRequired()
                 .HasColumnType("varchar(100)");
 
+            builder.Property(p => p.Valor)
+                .HasColumnType("decimal(5,2)");
+
             builder.ToTable("Produtos");
         }
     }

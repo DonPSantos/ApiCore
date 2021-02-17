@@ -28,6 +28,7 @@ namespace ApiCore.Api.Controllers
         public async Task<IEnumerable<ProdutoViewModel>> ObterTodosAsync()
         {
             return _mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterProdutosFornecedores());
+
         }
 
         [HttpGet("{id:guid}")]
@@ -80,7 +81,7 @@ namespace ApiCore.Api.Controllers
 
             var imageDataByteArray = Convert.FromBase64String(arquivo);
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imgNome);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", imgNome);
 
             if (System.IO.File.Exists(filePath))
             {

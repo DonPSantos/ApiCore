@@ -2,6 +2,7 @@
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -58,30 +59,26 @@ namespace ApiCore.Api.Controllers
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var imagemNome = Guid.NewGuid() + "-" + produtoViewModel.Imagem;
-
-            if (!UploadArquivo(produtoViewModel.ImagemUpload, imagemNome))
+            if (! await UploadArquivo(produtoViewModel.ImagemUpload))
             {
                 return CustomResponse(produtoViewModel);
             }
-            produtoViewModel.Imagem = imagemNome;
 
             await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
 
             return CustomResponse(produtoViewModel);
         }
 
-        private bool UploadArquivo(string arquivo, string imgNome)
+        private async Task<bool> UploadArquivo(IFormFile arquivo)
         {
-            if (string.IsNullOrEmpty(arquivo))
+            if (arquivo == null || arquivo.Length <=0)
             {
                 NotificarErro("Forneça uma imagem para este produto!");
                 return false;
             }
 
-            var imageDataByteArray = Convert.FromBase64String(arquivo);
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", imgNome);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", Guid.NewGuid() + "-"+arquivo.FileName);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -89,7 +86,10 @@ namespace ApiCore.Api.Controllers
                 return false;
             }
 
-            System.IO.File.WriteAllBytes(filePath, imageDataByteArray);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await arquivo.CopyToAsync(stream);
+            }
 
             return true;
         }

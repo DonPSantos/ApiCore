@@ -12,7 +12,7 @@ namespace ApiCore.Api.Configurations
             CreateMap<Endereco, EnderecoViewModel>().ReverseMap();
             CreateMap<ProdutoViewModel, Produto>();
             CreateMap<Produto, ProdutoViewModel>()
-                .ForMember(dest => dest.NomeFornecedor,opt => opt.MapFrom(src => src.Fornecedor.Nome));
+                .ForMember(dest => dest.NomeFornecedor, opt => opt.MapFrom(src => src.Fornecedor.Nome));
         }
     }
 }

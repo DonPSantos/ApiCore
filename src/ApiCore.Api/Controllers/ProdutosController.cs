@@ -29,7 +29,6 @@ namespace ApiCore.Api.Controllers
         public async Task<IEnumerable<ProdutoViewModel>> ObterTodosAsync()
         {
             return _mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterProdutosFornecedores());
-
         }
 
         [HttpGet("{id:guid}")]
@@ -59,7 +58,7 @@ namespace ApiCore.Api.Controllers
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            if (! await UploadArquivo(produtoViewModel.ImagemUpload))
+            if (!await UploadArquivo(produtoViewModel.ImagemUpload))
             {
                 return CustomResponse(produtoViewModel);
             }
@@ -69,16 +68,52 @@ namespace ApiCore.Api.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> AtualizarAsync(Guid id, ProdutoViewModel produtoViewModel)
+        {
+            if (id != produtoViewModel.Id)
+            {
+                NotificarErro("Os ids informados não são iguais!");
+                return CustomResponse();
+            }
+
+            var produtoAtualizacao = await ObterProduto(id);
+
+            if (string.IsNullOrEmpty(produtoViewModel.Imagem))
+                produtoViewModel.Imagem = produtoAtualizacao.Imagem;
+
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            if (produtoViewModel.ImagemUpload != null)
+            {
+                if (!await UploadArquivo(produtoViewModel.ImagemUpload))
+                {
+                    return CustomResponse(ModelState);
+                }
+
+                produtoAtualizacao.Imagem = produtoViewModel.Imagem;
+            }
+
+            produtoAtualizacao.FornecedorId = produtoViewModel.FornecedorId;
+            produtoAtualizacao.Nome = produtoViewModel.Nome;
+            produtoAtualizacao.Descricao = produtoViewModel.Descricao;
+            produtoAtualizacao.Valor = produtoViewModel.Valor;
+            produtoAtualizacao.Ativo = produtoViewModel.Ativo;
+
+            await _produtoService.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+
+            return CustomResponse(produtoViewModel);
+        }
+
         private async Task<bool> UploadArquivo(IFormFile arquivo)
         {
-            if (arquivo == null || arquivo.Length <=0)
+            if (arquivo == null || arquivo.Length <= 0)
             {
                 NotificarErro("Forneça uma imagem para este produto!");
                 return false;
             }
 
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", Guid.NewGuid() + "-"+arquivo.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", Guid.NewGuid() + "-" + arquivo.FileName);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -92,6 +127,11 @@ namespace ApiCore.Api.Controllers
             }
 
             return true;
+        }
+
+        private async Task<ProdutoViewModel> ObterProduto(Guid id)
+        {
+            return _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
         }
     }
 }

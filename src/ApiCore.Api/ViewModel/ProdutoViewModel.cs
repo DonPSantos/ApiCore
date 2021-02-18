@@ -22,6 +22,8 @@ namespace ApiCore.Api.ViewModel
 
         public IFormFile ImagemUpload { get; set; }
 
+        public string Imagem { get; set; }
+
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public decimal Valor { get; set; }
 

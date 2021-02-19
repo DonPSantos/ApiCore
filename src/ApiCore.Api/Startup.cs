@@ -24,6 +24,8 @@ namespace ApiCore.Api
         {
             services.AddDbContext<ApiCoreDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddIdentityConfiguration(Configuration);
+
             services.AddAutoMapper(typeof(Startup));
 
             services.WebApiConfig();
@@ -38,6 +40,8 @@ namespace ApiCore.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseMvcConfiguration();
         }

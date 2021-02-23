@@ -1,7 +1,9 @@
-﻿using ApiCore.Api.ViewModel;
+﻿using ApiCore.Api.Configurations.Authorization;
+using ApiCore.Api.ViewModel;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,12 +13,14 @@ using System.Threading.Tasks;
 
 namespace ApiCore.Api.Controllers
 {
+    [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
     public class ProdutosController : MainController
     {
+        private readonly IMapper _mapper;
         private readonly IProdutoRepository _produtoRepository;
         private readonly IProdutoService _produtoService;
-        private readonly IMapper _mapper;
 
         public ProdutosController(IProdutoRepository produtoRepository, IProdutoService produtoService, IMapper mapper, INotificador notificador) : base(notificador)
         {
@@ -25,34 +29,7 @@ namespace ApiCore.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<ProdutoViewModel>> ObterTodosAsync()
-        {
-            return _mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterProdutosFornecedores());
-        }
-
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<ProdutoViewModel>> ObterPorIdAsync(Guid id)
-        {
-            var produtoViewModel = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
-
-            if (produtoViewModel == null) return NotFound();
-
-            return produtoViewModel;
-        }
-
-        [HttpDelete("{id:guid}")]
-        public async Task<ActionResult<ProdutoViewModel>> ExcluirAsync(Guid id)
-        {
-            var produtoViewModel = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
-
-            if (produtoViewModel == null) return NotFound();
-
-            await _produtoService.Remover(id);
-
-            return CustomResponse(produtoViewModel);
-        }
-
+        [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<ProdutoViewModel>> AdicionarAsync(ProdutoViewModel produtoViewModel)
         {
@@ -68,6 +45,7 @@ namespace ApiCore.Api.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [ClaimsAuthorize("Produto", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> AtualizarAsync(Guid id, ProdutoViewModel produtoViewModel)
         {
@@ -105,6 +83,40 @@ namespace ApiCore.Api.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [ClaimsAuthorize("Produto", "Remover")]
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<ProdutoViewModel>> ExcluirAsync(Guid id)
+        {
+            var produtoViewModel = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
+
+            if (produtoViewModel == null) return NotFound();
+
+            await _produtoService.Remover(id);
+
+            return CustomResponse(produtoViewModel);
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<ProdutoViewModel>> ObterPorIdAsync(Guid id)
+        {
+            var produtoViewModel = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
+
+            if (produtoViewModel == null) return NotFound();
+
+            return produtoViewModel;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<ProdutoViewModel>> ObterTodosAsync()
+        {
+            return _mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterProdutosFornecedores());
+        }
+
+        private async Task<ProdutoViewModel> ObterProduto(Guid id)
+        {
+            return _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
+        }
+
         private async Task<bool> UploadArquivo(IFormFile arquivo)
         {
             if (arquivo == null || arquivo.Length <= 0)
@@ -127,11 +139,6 @@ namespace ApiCore.Api.Controllers
             }
 
             return true;
-        }
-
-        private async Task<ProdutoViewModel> ObterProduto(Guid id)
-        {
-            return _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
         }
     }
 }

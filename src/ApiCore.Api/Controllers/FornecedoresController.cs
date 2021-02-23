@@ -16,9 +16,9 @@ namespace ApiCore.Api.Controllers
     [ApiController]
     public class FornecedoresController : MainController
     {
+        private readonly IEnderecoRepository _enderecoRepository;
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IFornecedorService _fornecedorService;
-        private readonly IEnderecoRepository _enderecoRepository;
         private readonly IMapper _mapper;
 
         public FornecedoresController(IFornecedorRepository fornecedorRepository, IFornecedorService fornecedorService, IEnderecoRepository enderecoRepository, IMapper mapper, INotificador notificador) : base(notificador)
@@ -27,25 +27,6 @@ namespace ApiCore.Api.Controllers
             _fornecedorService = fornecedorService;
             _enderecoRepository = enderecoRepository;
             _mapper = mapper;
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IEnumerable<FornecedorViewModel>> ObterTodosAsync()
-        {
-            var fornecedores = await _fornecedorRepository.ObterTodos();
-
-            return _mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
-        }
-
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<FornecedorViewModel>> ObterPorIdAsync(Guid id)
-        {
-            var fornecedor = await _fornecedorRepository.ObterFornecedorProdutosEndereco(id);
-
-            if (fornecedor == null) return NotFound();
-
-            return _mapper.Map<FornecedorViewModel>(fornecedor);
         }
 
         [ClaimsAuthorize("Fornecedor", "Adicionar")]
@@ -88,10 +69,23 @@ namespace ApiCore.Api.Controllers
             return CustomResponse(fornecedorViewModel);
         }
 
-        [HttpGet("endereco/{id:guid}")]
-        private async Task<EnderecoViewModel> ObterEnderecoPorId(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<FornecedorViewModel>> ObterPorIdAsync(Guid id)
         {
-            return _mapper.Map<EnderecoViewModel>(await _enderecoRepository.ObterPorId(id));
+            var fornecedor = await _fornecedorRepository.ObterFornecedorProdutosEndereco(id);
+
+            if (fornecedor == null) return NotFound();
+
+            return _mapper.Map<FornecedorViewModel>(fornecedor);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IEnumerable<FornecedorViewModel>> ObterTodosAsync()
+        {
+            var fornecedores = await _fornecedorRepository.ObterTodos();
+
+            return _mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
         }
 
         [ClaimsAuthorize("Fornecedor", "Atualizar")]
@@ -109,6 +103,12 @@ namespace ApiCore.Api.Controllers
             await _fornecedorService.AtualizarEndereco(_mapper.Map<Endereco>(enderecoViewModel));
 
             return CustomResponse(enderecoViewModel);
+        }
+
+        [HttpGet("endereco/{id:guid}")]
+        private async Task<EnderecoViewModel> ObterEnderecoPorId(Guid id)
+        {
+            return _mapper.Map<EnderecoViewModel>(await _enderecoRepository.ObterPorId(id));
         }
     }
 }

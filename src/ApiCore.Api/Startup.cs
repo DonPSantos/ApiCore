@@ -39,6 +39,10 @@ namespace ApiCore.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseAuthentication();
 

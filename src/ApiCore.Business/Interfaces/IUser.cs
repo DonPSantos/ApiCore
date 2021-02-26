@@ -8,14 +8,14 @@ namespace ApiCore.Business.Intefaces
     {
         string Name { get; }
 
-        Guid GetUserId();
+        IEnumerable<Claim> GetClaimsIdentity();
 
         string GetUserEmail();
+
+        Guid GetUserId();
 
         bool IsAuthenticated();
 
         bool IsInRole(string role);
-
-        IEnumerable<Claim> GetClaimsIdentity();
     }
 }

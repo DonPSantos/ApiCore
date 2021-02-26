@@ -24,14 +24,15 @@ namespace ApiCore.Api.Controllers
         public AuthController(INotificador notificador,
                                 SignInManager<IdentityUser> signInManager,
                                 UserManager<IdentityUser> userManager,
-                                IOptions<AppSettings> appSettings) : base(notificador)
+                                IOptions<AppSettings> appSettings,
+                                IUser user) : base(notificador, user)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _appSettings = appSettings.Value;
         }
 
-        [HttpPost("cadastrar")]
+        [HttpPost("cadastro")]
         public async Task<ActionResult> RegistrarAsync(RegisterUserViewModel registrerUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -59,7 +60,7 @@ namespace ApiCore.Api.Controllers
             return CustomResponse(registrerUser);
         }
 
-        [HttpPost("logar")]
+        [HttpPost("login")]
         public async Task<ActionResult> Login(LoginUserViewModel loginUser)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

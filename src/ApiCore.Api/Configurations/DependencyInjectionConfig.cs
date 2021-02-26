@@ -1,8 +1,10 @@
-﻿using ApiCore.Business.Intefaces;
+﻿using ApiCore.Api.Extensions;
+using ApiCore.Business.Intefaces;
 using ApiCore.Business.Notifications;
 using ApiCore.Data.Context;
 using DevIO.Business.Services;
 using DevIO.Data.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiCore.Api.Configurations
@@ -19,6 +21,9 @@ namespace ApiCore.Api.Configurations
             services.AddScoped<INotificador, Notificador>();
             services.AddScoped<IFornecedorService, FornecedorService>();
             services.AddScoped<IProdutoService, ProdutoService>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IUser, AspNetUser>();
 
             return services;
         }

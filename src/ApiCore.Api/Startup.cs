@@ -1,11 +1,14 @@
 using ApiCore.Api.Configurations;
+using ApiCore.Api.Configurations.Swagger;
 using ApiCore.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace ApiCore.Api
 {
@@ -29,11 +32,13 @@ namespace ApiCore.Api
 
             services.WebApiConfig();
 
+            services.AddSwaggerConfig();
+
             services.ResolveDenpendencies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -47,6 +52,8 @@ namespace ApiCore.Api
             app.UseAuthentication();
 
             app.UseMvcConfiguration();
+
+            app.UseSwaggerConfig(provider);
         }
     }
 }

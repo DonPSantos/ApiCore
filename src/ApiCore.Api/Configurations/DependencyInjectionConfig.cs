@@ -1,4 +1,5 @@
-﻿using ApiCore.Api.Extensions;
+﻿using ApiCore.Api.Configurations.Swagger;
+using ApiCore.Api.Extensions;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Notifications;
 using ApiCore.Data.Context;
@@ -6,6 +7,8 @@ using DevIO.Business.Services;
 using DevIO.Data.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ApiCore.Api.Configurations
 {
@@ -24,6 +27,8 @@ namespace ApiCore.Api.Configurations
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUser, AspNetUser>();
+
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
             return services;
         }

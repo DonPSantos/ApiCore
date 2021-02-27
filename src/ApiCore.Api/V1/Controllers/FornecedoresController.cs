@@ -1,4 +1,5 @@
 ﻿using ApiCore.Api.Configurations.Authorization;
+using ApiCore.Api.Controllers;
 using ApiCore.Api.ViewModel;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
@@ -9,11 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ApiCore.Api.Controllers
+namespace ApiCore.Api.V1.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class FornecedoresController : MainController
     {
         private readonly IEnderecoRepository _enderecoRepository;

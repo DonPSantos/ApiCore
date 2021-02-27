@@ -1,4 +1,5 @@
 ﻿using ApiCore.Api.Configurations.Authorization;
+using ApiCore.Api.Controllers;
 using ApiCore.Api.ViewModel;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
@@ -11,11 +12,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ApiCore.Api.Controllers
+namespace ApiCore.Api.V1.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ProdutosController : MainController
     {
         private readonly IMapper _mapper;

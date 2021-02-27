@@ -1,4 +1,5 @@
-﻿using ApiCore.Api.Extensions;
+﻿using ApiCore.Api.Controllers;
+using ApiCore.Api.Extensions;
 using ApiCore.Api.ViewModel.User;
 using ApiCore.Business.Intefaces;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +13,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiCore.Api.Controllers
+namespace ApiCore.Api.V1.Controllers
 {
-    [Route("api")]
+    [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}'")]
     public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> _signInManager;

@@ -37,14 +37,18 @@ namespace ApiCore.Api.V1.Controllers
 
         [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
-        public async Task<ActionResult<ProdutoViewModel>> AdicionarAsync(ProdutoViewModel produtoViewModel)
+        public async Task<ActionResult<ProdutoViewModel>> AdicionarAsync([FromForm] ProdutoViewModel produtoViewModel)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            if (!await UploadArquivo(produtoViewModel.ImagemUpload))
+            produtoViewModel.Imagem = Guid.NewGuid() + "-" + produtoViewModel.ImagemUpload.FileName;
+
+            if (!await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem))
             {
                 return CustomResponse(produtoViewModel);
             }
+
+            produtoViewModel.DataCadastro = DateTime.Now;
 
             await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
 
@@ -53,7 +57,7 @@ namespace ApiCore.Api.V1.Controllers
 
         [ClaimsAuthorize("Produto", "Atualizar")]
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> AtualizarAsync(Guid id, ProdutoViewModel produtoViewModel)
+        public async Task<IActionResult> AtualizarAsync(Guid id, [FromForm] ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id)
             {
@@ -68,9 +72,11 @@ namespace ApiCore.Api.V1.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            if (produtoViewModel.ImagemUpload != null)
+            if (produtoViewModel.ImagemUpload is not null)
             {
-                if (!await UploadArquivo(produtoViewModel.ImagemUpload))
+                produtoViewModel.Imagem = Guid.NewGuid() + "-" + produtoViewModel.ImagemUpload.FileName;
+
+                if (!await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem))
                 {
                     return CustomResponse(ModelState);
                 }
@@ -123,7 +129,7 @@ namespace ApiCore.Api.V1.Controllers
             return _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
         }
 
-        private async Task<bool> UploadArquivo(IFormFile arquivo)
+        private async Task<bool> UploadArquivo(IFormFile arquivo, string nomeArquivo)
         {
             if (arquivo == null || arquivo.Length <= 0)
             {
@@ -131,7 +137,7 @@ namespace ApiCore.Api.V1.Controllers
                 return false;
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", Guid.NewGuid() + "-" + arquivo.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", nomeArquivo);
 
             if (System.IO.File.Exists(filePath))
             {

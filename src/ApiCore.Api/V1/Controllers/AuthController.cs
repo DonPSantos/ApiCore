@@ -2,6 +2,7 @@
 using ApiCore.Api.Extensions;
 using ApiCore.Api.ViewModel.User;
 using ApiCore.Business.Intefaces;
+using KissLog;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -23,16 +24,19 @@ namespace ApiCore.Api.V1.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppSettings _appSettings;
+        private readonly ILogger _logger;
 
         public AuthController(INotificador notificador,
                                 SignInManager<IdentityUser> signInManager,
                                 UserManager<IdentityUser> userManager,
                                 IOptions<AppSettings> appSettings,
-                                IUser user) : base(notificador, user)
+                                IUser user,
+                                ILogger logger) : base(notificador, user)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _appSettings = appSettings.Value;
+            _logger = logger;
         }
 
         [HttpPost("cadastro")]
@@ -52,6 +56,7 @@ namespace ApiCore.Api.V1.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
+                _logger.Info($"Usuário {registrerUser.Email} cadastrado com sucesso.");
                 return CustomResponse(await GerarJwt(registrerUser.Email));
             }
 
@@ -59,6 +64,8 @@ namespace ApiCore.Api.V1.Controllers
             {
                 NotificarErro(error.Description);
             }
+
+            _logger.Error($"Erro de cadastro, e-mail de referência {registrerUser.Email}.");
 
             return CustomResponse(registrerUser);
         }
@@ -72,11 +79,13 @@ namespace ApiCore.Api.V1.Controllers
 
             if (result.Succeeded)
             {
+                _logger.Info($"Usuário {loginUser.Email} efetuou o login.");
                 return CustomResponse(await GerarJwt(loginUser.Email));
             }
 
             if (result.IsLockedOut)
             {
+                _logger.Info($"Usuário {loginUser.Email} temporariamente bloqueado.");
                 NotificarErro("Usuário temporariamente bloqueado por tentativas invalidas.");
                 return CustomResponse(loginUser);
             }

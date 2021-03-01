@@ -4,6 +4,7 @@ using ApiCore.Api.ViewModel;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
 using AutoMapper;
+using KissLog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,18 +23,21 @@ namespace ApiCore.Api.V1.Controllers
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IFornecedorService _fornecedorService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
         public FornecedoresController(IFornecedorRepository fornecedorRepository,
                                         IFornecedorService fornecedorService,
                                         IEnderecoRepository enderecoRepository,
                                         IMapper mapper,
                                         INotificador notificador,
-                                        IUser user) : base(notificador, user)
+                                        IUser user,
+                                        ILogger logger) : base(notificador, user)
         {
             _fornecedorRepository = fornecedorRepository;
             _fornecedorService = fornecedorService;
             _enderecoRepository = enderecoRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [ClaimsAuthorize("Fornecedor", "Adicionar")]

@@ -1,6 +1,7 @@
 using ApiCore.Api.Configurations;
 using ApiCore.Api.Configurations.Swagger;
 using ApiCore.Data.Context;
+using KissLog.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -21,7 +22,6 @@ namespace ApiCore.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApiCoreDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -32,12 +32,13 @@ namespace ApiCore.Api
 
             services.WebApiConfig();
 
+            services.AddKissLogConfig();
+
             services.AddSwaggerConfig();
 
             services.ResolveDenpendencies();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
@@ -50,6 +51,8 @@ namespace ApiCore.Api
             }
 
             app.UseAuthentication();
+
+            app.UseKissLogConfig(Configuration);
 
             app.UseMvcConfiguration();
 

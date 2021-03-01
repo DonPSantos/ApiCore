@@ -4,14 +4,16 @@ using ApiCore.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiCore.Data.Migrations
 {
     [DbContext(typeof(ApiCoreDbContext))]
-    partial class ApiCoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210228230056_update-prduto")]
+    partial class updateprduto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -11,6 +11,7 @@ namespace ApiCore.Business.Models
         public decimal Valor { get; set; }
         public DateTime DataCadastro { get; set; }
         public bool Ativo { get; set; }
+        public string Visualizacao { get; set; }
 
         //Relacionamentos
         public Fornecedor Fornecedor { get; set; }

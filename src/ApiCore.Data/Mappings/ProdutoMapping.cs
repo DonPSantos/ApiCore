@@ -25,6 +25,9 @@ namespace ApiCore.Data.Mappings
             builder.Property(p => p.Valor)
                 .HasColumnType("decimal(5,2)");
 
+            builder.Property(p => p.Visualizacao)
+                .HasColumnType("varchar(200)");
+
             builder.ToTable("Produtos");
         }
     }

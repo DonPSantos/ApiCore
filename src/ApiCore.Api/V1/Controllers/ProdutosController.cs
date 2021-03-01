@@ -4,9 +4,12 @@ using ApiCore.Api.ViewModel;
 using ApiCore.Business.Intefaces;
 using ApiCore.Business.Models;
 using AutoMapper;
+using Dropbox.Api;
+using Dropbox.Api.Files;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,11 +24,13 @@ namespace ApiCore.Api.V1.Controllers
     public class ProdutosController : MainController
     {
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly IProdutoRepository _produtoRepository;
         private readonly IProdutoService _produtoService;
 
         public ProdutosController(IProdutoRepository produtoRepository,
                                     IProdutoService produtoService,
+                                    IConfiguration configuration,
                                     IMapper mapper,
                                     INotificador notificador,
                                     IUser user) : base(notificador, user)
@@ -33,6 +38,7 @@ namespace ApiCore.Api.V1.Controllers
             _produtoRepository = produtoRepository;
             _produtoService = produtoService;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [ClaimsAuthorize("Produto", "Adicionar")]
@@ -43,10 +49,7 @@ namespace ApiCore.Api.V1.Controllers
 
             produtoViewModel.Imagem = Guid.NewGuid() + "-" + produtoViewModel.ImagemUpload.FileName;
 
-            if (!await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem))
-            {
-                return CustomResponse(produtoViewModel);
-            }
+            produtoViewModel.Visualizacao = await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem);
 
             produtoViewModel.DataCadastro = DateTime.Now;
 
@@ -76,10 +79,7 @@ namespace ApiCore.Api.V1.Controllers
             {
                 produtoViewModel.Imagem = Guid.NewGuid() + "-" + produtoViewModel.ImagemUpload.FileName;
 
-                if (!await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem))
-                {
-                    return CustomResponse(ModelState);
-                }
+                produtoAtualizacao.Visualizacao = await UploadArquivo(produtoViewModel.ImagemUpload, produtoViewModel.Imagem);
 
                 produtoAtualizacao.Imagem = produtoViewModel.Imagem;
             }
@@ -129,28 +129,25 @@ namespace ApiCore.Api.V1.Controllers
             return _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObterProdutoFornecedor(id));
         }
 
-        private async Task<bool> UploadArquivo(IFormFile arquivo, string nomeArquivo)
+        private async Task<string> UploadArquivo(IFormFile arquivo, string nomeArquivo)
         {
-            if (arquivo == null || arquivo.Length <= 0)
+            var accessToken = _configuration.GetSection("DropBoxAccessToken").Value;
+
+            if (arquivo is null || arquivo.Length <= 0)
             {
                 NotificarErro("Forneça uma imagem para este produto!");
-                return false;
+                return string.Empty;
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", nomeArquivo);
-
-            if (System.IO.File.Exists(filePath))
+            using (var _dropBox = new DropboxClient(accessToken))
+            using (var _memoryStream = new MemoryStream())
             {
-                NotificarErro("Já existe um arquivo com este nome!");
-                return false;
+                await arquivo.CopyToAsync(_memoryStream);
+                _memoryStream.Position = 0;
+                var updated = await _dropBox.Files.UploadAsync("/" + nomeArquivo, WriteMode.Overwrite.Instance, body: _memoryStream);
+                var result = await _dropBox.Sharing.CreateSharedLinkWithSettingsAsync("/" + nomeArquivo);
+                return result.Url;
             }
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await arquivo.CopyToAsync(stream);
-            }
-
-            return true;
         }
     }
 }

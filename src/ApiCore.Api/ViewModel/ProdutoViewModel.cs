@@ -32,6 +32,8 @@ namespace ApiCore.Api.ViewModel
 
         public bool Ativo { get; set; }
 
+        public string Visualizacao { get; set; }
+
         [ScaffoldColumn(false)]
         public string NomeFornecedor { get; set; }
     }

@@ -103,6 +103,9 @@ namespace ApiCore.Api.V1.Controllers
 
             if (produtoViewModel == null) return NotFound();
 
+            if (string.IsNullOrEmpty(produtoViewModel.Imagem))
+                await ApagarImagem(produtoViewModel.Imagem);
+
             await _produtoService.Remover(id);
 
             return CustomResponse(produtoViewModel);
@@ -146,8 +149,16 @@ namespace ApiCore.Api.V1.Controllers
                 _memoryStream.Position = 0;
                 var updated = await _dropBox.Files.UploadAsync("/" + nomeArquivo, WriteMode.Overwrite.Instance, body: _memoryStream);
                 var result = await _dropBox.Sharing.CreateSharedLinkWithSettingsAsync("/" + nomeArquivo);
-                return result.Url;
+                return result.Url + "&raw=1";
             }
+        }
+
+        private async Task ApagarImagem(string nomeImagem)
+        {
+            var accessToken = _configuration.GetSection("DropBoxAccessToken").Value;
+
+            using (var _dropBox = new DropboxClient(accessToken))
+                await _dropBox.Files.DeleteV2Async("/" + nomeImagem);
         }
     }
 }

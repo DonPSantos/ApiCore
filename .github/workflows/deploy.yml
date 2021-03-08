@@ -21,7 +21,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi
+      run: dotnet publish ${{ secrets.API_SECRETS }} -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi
 
     - name: Azure Login
       uses: azure/login@v1.1

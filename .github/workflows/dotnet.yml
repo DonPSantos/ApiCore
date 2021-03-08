@@ -30,6 +30,6 @@ jobs:
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v1
       with:
-        app-name: "aspnetghcdeploy"
+        app-name: "ApiCoreApi"
         slot-name: "production"
         package: ${{env.DOTNET_ROOT}}/ApiCoreApi

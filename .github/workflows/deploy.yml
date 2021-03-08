@@ -21,9 +21,8 @@ jobs:
       run: dotnet build --configuration Release
       
     - name: Dump GitHub STRING CNN
-      env:
-       STRING_CNN: ${{ secrets.STRING_CNN }}
-      run: echo "$STRING_CNN"
+      with:
+        STRING_CNN: ${{ secrets.STRING_CNN }}
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi

@@ -28,7 +28,12 @@ jobs:
         files: '${{env.DOTNET_ROOT}}/ApiCoreApi/appsettings.json'
       env:
         ConnectionStrings.DefaultConnection: ${{ secrets.STRING_CNN }}
-      
+        AppSettings.Secret: ${{ secrets.TOKEN_SECRET }}
+        DropBoxAccessToken: ${{ secrets.DROPBOX_TOKEN }}
+        KissLog.OrganizationId: ${{ secrets.KISSLOG_ORGANIZATION }}
+        KissLog.ApplicationId: ${{ secrets.KISSLOG_APPLICATION }}
+        
+
     - name: Azure Login
       uses: azure/login@v1.1
       with:

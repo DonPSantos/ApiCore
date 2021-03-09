@@ -19,13 +19,15 @@ jobs:
         dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build --configuration Release
-      
-    - name: Dump GitHub STRING CNN
-      with:
-        STRING_CNN: ${{ secrets.STRING_CNN }}
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi
+      
+    - uses: microsoft/variable-substitution@v1
+    with:
+      files: '${{env.DOTNET_ROOT}}/ApiCoreApi/appsetings.json'
+    env:
+      ConnectionsStrings.DefaultConnection: '${{ secrets.STRING_CNN }}
 
     - name: Azure Login
       uses: azure/login@v1.1

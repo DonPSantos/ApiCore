@@ -27,7 +27,7 @@ jobs:
     with:
       files: '${{env.DOTNET_ROOT}}/ApiCoreApi/appsetings.json'
     env:
-      ConnectionsStrings.DefaultConnection: '${{ secrets.STRING_CNN }}
+      ConnectionsStrings.DefaultConnection: '${{ secrets.STRING_CNN }}'
 
     - name: Azure Login
       uses: azure/login@v1.1

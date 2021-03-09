@@ -40,6 +40,7 @@ namespace ApiCore.Api.V1.Controllers
             _logger = logger;
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<FornecedorViewModel>> AdicionarAsync(FornecedorViewModel fornecedorViewModel)
@@ -50,6 +51,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(fornecedorViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [ClaimsAuthorize("Fornecedor", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> AtualizarAsync(Guid id, FornecedorViewModel fornecedorViewModel)
@@ -67,6 +69,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(fornecedorViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [ClaimsAuthorize("Fornecedor", "Remover")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> ExcluirAsync(Guid id)
@@ -80,6 +83,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(fornecedorViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> ObterPorIdAsync(Guid id)
         {
@@ -90,6 +94,7 @@ namespace ApiCore.Api.V1.Controllers
             return _mapper.Map<FornecedorViewModel>(fornecedor);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<FornecedorViewModel>> ObterTodosAsync()

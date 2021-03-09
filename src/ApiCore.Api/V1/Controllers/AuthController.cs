@@ -39,6 +39,7 @@ namespace ApiCore.Api.V1.Controllers
             _logger = logger;
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [HttpPost("cadastro")]
         public async Task<ActionResult> RegistrarAsync(RegisterUserViewModel registrerUser)
         {
@@ -70,6 +71,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(registrerUser);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginUserViewModel loginUser)
         {

@@ -41,6 +41,7 @@ namespace ApiCore.Api.V1.Controllers
             _configuration = configuration;
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<ProdutoViewModel>> AdicionarAsync([FromForm] ProdutoViewModel produtoViewModel)
@@ -58,6 +59,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [ClaimsAuthorize("Produto", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> AtualizarAsync(Guid id, [FromForm] ProdutoViewModel produtoViewModel)
@@ -95,6 +97,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [ClaimsAuthorize("Produto", "Remover")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoViewModel>> ExcluirAsync(Guid id)
@@ -111,6 +114,7 @@ namespace ApiCore.Api.V1.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProdutoViewModel>> ObterPorIdAsync(Guid id)
         {
@@ -121,6 +125,7 @@ namespace ApiCore.Api.V1.Controllers
             return produtoViewModel;
         }
 
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [HttpGet]
         public async Task<IEnumerable<ProdutoViewModel>> ObterTodosAsync()
         {

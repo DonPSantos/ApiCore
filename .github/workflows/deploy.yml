@@ -24,11 +24,11 @@ jobs:
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi
       
     - uses: microsoft/variable-substitution@v1
-    with:
-      files: '${{env.DOTNET_ROOT}}/ApiCoreApi/appsetings.json'
-    env:
-      ConnectionsStrings.DefaultConnection: '${{ secrets.STRING_CNN }}'
-
+      with:
+        files: '${{env.DOTNET_ROOT}}/ApiCoreApi/appsettings.json'
+      env:
+        ConnectionStrings.DefaultConnection: ${{ secrets.STRING_CNN }}
+      
     - name: Azure Login
       uses: azure/login@v1.1
       with:

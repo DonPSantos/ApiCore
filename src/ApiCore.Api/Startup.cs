@@ -35,7 +35,8 @@ namespace ApiCore.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApiCoreDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            var teste = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApiCoreDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentityConfiguration(Configuration);
 

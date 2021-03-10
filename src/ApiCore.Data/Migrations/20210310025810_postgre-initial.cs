@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ApiCore.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class postgreinitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,11 +11,11 @@ namespace ApiCore.Data.Migrations
                 name: "Fornecedores",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "varchar(200)", nullable: false),
                     Documento = table.Column<string>(type: "varchar(14)", nullable: false),
-                    TipoFornecedor = table.Column<int>(nullable: false),
-                    Ativo = table.Column<bool>(nullable: false)
+                    TipoFornecedor = table.Column<int>(type: "integer", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,8 +26,8 @@ namespace ApiCore.Data.Migrations
                 name: "Enderecos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    FornecedorId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FornecedorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Logradouro = table.Column<string>(type: "varchar(200)", nullable: false),
                     Numero = table.Column<string>(type: "varchar(50)", nullable: false),
                     Complemento = table.Column<string>(type: "varchar(250)", nullable: true),
@@ -51,14 +51,15 @@ namespace ApiCore.Data.Migrations
                 name: "Produtos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    FornecedorId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FornecedorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "varchar(200)", nullable: false),
                     Descricao = table.Column<string>(type: "varchar(1000)", nullable: false),
                     Imagem = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Valor = table.Column<decimal>(nullable: false),
-                    DataCadastro = table.Column<DateTime>(nullable: false),
-                    Ativo = table.Column<bool>(nullable: false)
+                    Valor = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    Visualizacao = table.Column<string>(type: "varchar(200)", nullable: true)
                 },
                 constraints: table =>
                 {

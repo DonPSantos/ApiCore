@@ -35,14 +35,13 @@ namespace ApiCore.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var teste = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApiCoreDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentityConfiguration(Configuration);
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.WebApiConfig();
+            services.WebApiConfig(Configuration);
 
             services.AddKissLogConfig();
 

@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
+using HealthChecks.UI.Client;
 
 namespace ApiCore.Api.Configurations
 {
     public static class ApiConfig
     {
-        public static IServiceCollection WebApiConfig(this IServiceCollection services)
+        public static IServiceCollection WebApiConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers()
                     .AddNewtonsoftJson();
@@ -39,6 +42,13 @@ namespace ApiCore.Api.Configurations
                         .AllowAnyHeader());
             });
 
+            services.AddHealthChecks()
+                    .AddNpgSql(configuration.GetConnectionString("DefaultConnection"),
+                    name: "PostgreSQL", tags: new string[] { "db", "data" });
+
+            services.AddHealthChecksUI()
+                    .AddInMemoryStorage();
+
             return services;
         }
 
@@ -52,10 +62,18 @@ namespace ApiCore.Api.Configurations
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            // Gera o endpoint que retornará os dados utilizados no dashboard
+            app.UseHealthChecks("/healthchecks-data-ui", new HealthCheckOptions()
             {
-                endpoints.MapControllers();
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
+
+            // Ativa o dashboard para a visualização da situação de cada Health Check
+            app.UseHealthChecksUI(options => options.UIPath = "/monitor");
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+
             return app;
         }
     }

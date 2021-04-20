@@ -19,9 +19,12 @@ jobs:
         dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build --configuration Release
-
+    
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ApiCoreApi
+      
+    - name: dotnet teste
+      run: dotnet test
       
     - uses: microsoft/variable-substitution@v1
       with:

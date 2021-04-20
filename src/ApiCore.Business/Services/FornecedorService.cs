@@ -58,7 +58,7 @@ namespace DevIO.Business.Services
 
         public async Task<bool> Remover(Guid id)
         {
-            if (_fornecedorRepository.ObterFornecedorProdutosEndereco(id).Result.Produtos.Any())
+            if (_fornecedorRepository.ObterFornecedorProdutosEndereco(id)?.Result?.Produtos?.Any() ?? false)
             {
                 Notificar("O fornecedor possui produtos cadastrados!");
                 return false;

@@ -3,7 +3,6 @@ using Bogus;
 using Bogus.Extensions.Brazil;
 using CountryData.Bogus;
 using DevIO.Business.Services;
-using DevIO.Data.Repository;
 using Moq.AutoMock;
 using System;
 using System.Collections.Generic;

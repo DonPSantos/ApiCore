@@ -20,8 +20,6 @@ namespace DevIO.Business.Services
         {
             if (!ExecutarValidacao(new ProdutoValidation(), produto)) return;
 
-            //var user = _user.GetUserId();
-
             await _produtoRepository.Adicionar(produto);
         }
 

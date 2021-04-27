@@ -2,6 +2,7 @@
 using ApiCore.Business.Models;
 using ApiCore.Business.Models.Validations;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -75,6 +76,7 @@ namespace DevIO.Business.Services
             return true;
         }
 
+        [ExcludeFromCodeCoverage]
         public void Dispose()
         {
             _fornecedorRepository?.Dispose();

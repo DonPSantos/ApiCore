@@ -15,11 +15,11 @@ namespace ApiCore.Test.V1.Fixtures
     {
     }
 
-    public class FornecedorFixture : IDisposable
+    public sealed class FornecedorFixture : IDisposable
     {
         public FornecedorService FornecedorService;
         public AutoMocker Mocker;
-        private Faker _fake;
+        private readonly Faker _fake;
 
         public FornecedorFixture()
         {
@@ -28,6 +28,7 @@ namespace ApiCore.Test.V1.Fixtures
 
         public void Dispose()
         {
+            //Não necessita implementação
         }
 
         public Fornecedor GerarFornecedorInvalido()

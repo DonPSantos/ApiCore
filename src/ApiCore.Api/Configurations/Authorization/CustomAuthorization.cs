@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ApiCore.Api.Configurations.Authorization
 {
-    public class CustomAuthorization
+    public static class CustomAuthorization
     {
         public static bool ValidarClaimsUsuario(HttpContext context, string claimName, string claimValue)
         {

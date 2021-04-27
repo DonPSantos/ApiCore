@@ -16,7 +16,7 @@ namespace ApiCore.Api.Controllers
         public Guid UsuarioId { get; set; }
         public bool UsuarioAutenticado { get; set; }
 
-        public MainController(INotificador notificador, IUser user)
+        protected MainController(INotificador notificador, IUser user)
         {
             _notificador = notificador;
             _user = user;

@@ -14,11 +14,11 @@ namespace ApiCore.Test.Fixtures
     {
     }
 
-    public class ProdutoFixture : IDisposable
+    public sealed class ProdutoFixture : IDisposable
     {
         public ProdutoService ProdutoService;
         public AutoMocker Mocker;
-        private Faker _fake;
+        private readonly Faker _fake;
 
         public ProdutoFixture()
         {
@@ -27,6 +27,7 @@ namespace ApiCore.Test.Fixtures
 
         public void Dispose()
         {
+            //Não necessita implementação
         }
 
         public ProdutoService ObterProdutoService()

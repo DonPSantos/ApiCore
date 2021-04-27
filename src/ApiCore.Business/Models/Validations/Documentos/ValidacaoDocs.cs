@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ApiCore.Business.Models.Validations.Documentos
 {
-    public class CpfValidacao
+    public static class CpfValidacao
     {
         public const int TamanhoCpf = 11;
 
@@ -52,7 +53,7 @@ namespace ApiCore.Business.Models.Validations.Documentos
         }
     }
 
-    public class CnpjValidacao
+    public static class CnpjValidacao
     {
         public const int TamanhoCnpj = 14;
 
@@ -108,7 +109,7 @@ namespace ApiCore.Business.Models.Validations.Documentos
         private const int Modulo = 11;
         private readonly List<int> _multiplicadores = new List<int> { 2, 3, 4, 5, 6, 7, 8, 9 };
         private readonly IDictionary<int, string> _substituicoes = new Dictionary<int, string>();
-        private bool _complementarDoModulo = true;
+        private readonly bool _complementarDoModulo = true;
 
         public DigitoVerificador(string numero)
         {
@@ -140,7 +141,7 @@ namespace ApiCore.Business.Models.Validations.Documentos
 
         public string CalculaDigito()
         {
-            return !(_numero.Length > 0) ? "" : GetDigitSum();
+            return _numero.Length <= 0 ? "" : GetDigitSum();
         }
 
         private string GetDigitSum()
@@ -161,19 +162,19 @@ namespace ApiCore.Business.Models.Validations.Documentos
         }
     }
 
-    public class Utils
+    public static class Utils
     {
         public static string ApenasNumeros(string valor)
         {
-            var onlyNumber = "";
+            var onlyNumber = new StringBuilder();
             foreach (var s in valor)
             {
                 if (char.IsDigit(s))
                 {
-                    onlyNumber += s;
+                    onlyNumber.Append(s);
                 }
             }
-            return onlyNumber.Trim();
+            return onlyNumber.ToString().Trim();
         }
     }
 }

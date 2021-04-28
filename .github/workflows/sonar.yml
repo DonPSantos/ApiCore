@@ -1,4 +1,4 @@
-name: Build
+name: Test and Analyze
 on:
   push:
     branches:
@@ -47,7 +47,7 @@ jobs:
           # output format : lcov, json, opencover, corbertura, temacity (see coverlet documentation)
           outputFormat: opencover
           # path to unit test project from repository root
-          testProject: d:/ApiCore.Test/ApiCore.Test.csproj
+          testProject: D:\a\ApiCore\ApiCore.Test.csproj
           
       - name: Build and analyze
         env:

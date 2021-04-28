@@ -37,18 +37,6 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
           
-      - name: Coverlet coverage test
-        # You may pin to the exact commit or the version.
-        # uses: b3b00/coverlet-action@ea67400f084993d98cfb3e2ec5948197d80a7d4e
-        uses: b3b00/coverlet-action@1.1.1
-        with:
-          # output filename
-          output: ./lcov.info
-          # output format : lcov, json, opencover, corbertura, temacity (see coverlet documentation)
-          outputFormat: opencover
-          # path to unit test project from repository root
-          testProject: D:\a\ApiCore\ApiCore.Test.csproj
-          
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -56,5 +44,5 @@ jobs:
         shell: pwsh
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"DonPSantos_ApiCore" /o:"donpsantos" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet test --logger html
+          dotnet test --blame --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=opencover.xml
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

@@ -9,6 +9,10 @@
   <ItemGroup>
     <PackageReference Include="bogus" Version="33.0.2" />
     <PackageReference Include="CountryData.Bogus" Version="3.50.0" />
+    <PackageReference Include="coverlet.msbuild" Version="3.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="moq" Version="4.16.1" />
     <PackageReference Include="moq.automock" Version="2.3.0" />
@@ -28,5 +32,4 @@
     <ProjectReference Include="..\..\src\ApiCore.Business\ApiCore.Business.csproj" />
     <ProjectReference Include="..\..\src\ApiCore.Data\ApiCore.Data.csproj" />
   </ItemGroup>
-
 </Project>

@@ -24,14 +24,14 @@ namespace ApiCore.Api.V1.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppSettings _appSettings;
-        private readonly ILogger _logger;
+        private readonly IKLogger _logger;
 
         public AuthController(INotificador notificador,
                                 SignInManager<IdentityUser> signInManager,
                                 UserManager<IdentityUser> userManager,
                                 IOptions<AppSettings> appSettings,
                                 IUser user,
-                                ILogger logger) : base(notificador, user)
+                                IKLogger logger) : base(notificador, user)
         {
             _signInManager = signInManager;
             _userManager = userManager;

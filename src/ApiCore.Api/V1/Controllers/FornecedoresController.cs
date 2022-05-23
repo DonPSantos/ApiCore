@@ -23,7 +23,7 @@ namespace ApiCore.Api.V1.Controllers
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IFornecedorService _fornecedorService;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly IKLogger _logger;
 
         public FornecedoresController(IFornecedorRepository fornecedorRepository,
                                         IFornecedorService fornecedorService,
@@ -31,7 +31,7 @@ namespace ApiCore.Api.V1.Controllers
                                         IMapper mapper,
                                         INotificador notificador,
                                         IUser user,
-                                        ILogger logger) : base(notificador, user)
+                                        IKLogger logger) : base(notificador, user)
         {
             _fornecedorRepository = fornecedorRepository;
             _fornecedorService = fornecedorService;
